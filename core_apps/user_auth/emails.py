@@ -15,13 +15,13 @@ def send_otp_email(email, otp):
         "expiry_time": settings.OTP_EXPIRATION,
         "site_name": settings.SITE_NAME,
     }
-    html_email = render_to_string("emails/otp_email.html")
+    html_email = render_to_string("email/otp_email.html", context)
     plain_email = strip_tags(html_email)
     email = EmailMultiAlternatives(subject, plain_email, from_email, recipient_list)
     email.attach_alternative(html_email, "text/html")
     try:
         email.send()
-        logger.info(f"OTP email sent successfully to : {email}")
+        logger.info(f"OTP email sent successfully to : {email} OTP: {otp}")
     except Exception as e:
         logger.error(f"Failed to send OTP email to {email}: Error : {str(e)}")
 
@@ -35,7 +35,7 @@ def send_account_locked_email(self):
         "lockout_duration": int(settings.LOCKOUT_DURATION.total_seconds() // 60),
         "site_name": settings.SITE_NAME,
     }
-    html_email = render_to_string("emails/account_locked.html")
+    html_email = render_to_string("email/account_locked.html", context)
     plain_email = strip_tags(html_email)
     email = EmailMultiAlternatives(subject, plain_email, from_email, recipient_list)
     email.attach_alternative(html_email, "text/html")
